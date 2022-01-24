@@ -1,44 +1,41 @@
 import numpy as np
+import matplotlib.pylab as plt
 
-def AND(x1, x2):
-    x = np.array([x1, x2])
-    w = np.array([0.5, 0.5])
-    b = -0.7
+def step_function(x):
+    y = x > 0
+    return y.astype(int)
 
-    temp = np.sum(w * x) + b
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
 
-    if temp > 0:
-        return 1
-    else:
-        return 0
+def init_network():
+    network = {}
+    network['w1'] = np.array([[0.1, 0.3, 0.5], [0.2, 0.4, 0.6]])
+    network['b1'] = np.array([0.1, 0.2, 0.3])
+    network['w2'] = np.array([[0.1, 0.4], [0.2, 0.5], [0.3, 0.6]])
+    network['b2'] = np.array([0.1, 0.2])
+    network['w3'] = np.array([[0.1, 0.3], [0.2, 0.4]])
+    network['b3'] = np.array([0.1, 0.2])
 
-def NAND(x1, x2):
-    x = np.array([x1, x2])
-    w = np.array([-0.5, -0.5])
-    b = 0.7
+    return network
 
-    temp = np.sum(w * x) + b
+def identity_function(x):
+    return x
 
-    if temp > 0:
-        return 1
-    else:
-        return 0
+def forward(network, x):
+    w1, w2, w3 = network['w1'], network['w2'], network['w3']
+    b1, b2, b3 = network['b1'], network['b2'], network['b3']
 
-def OR(x1, x2):
-    x = np.array([x1, x2])
-    w = np.array([0.5, 0.5])
-    b = -0.2
+    a1 = b1 + np.dot(x, w1)
+    z1 = sigmoid(a1)
+    a2 = b2 + np.dot(z1, w2)
+    z2 = sigmoid(a2)
+    a3 = b3 + np.dot(z2, w3)
+    y = identity_function(a3)
 
-    temp = np.sum(w * x) + b
-
-    if temp > 0:
-        return 1
-    else:
-        return 0
-
-def XOR(x1, x2):
-    s1 = NAND(x1, x2)
-    s2 = OR(x1, x2)
-    y = AND(s1, s2)
     return y
 
+network = init_network()
+x = np.array([1.0, 0.5])
+y = forward(network, x)
+print(y)
